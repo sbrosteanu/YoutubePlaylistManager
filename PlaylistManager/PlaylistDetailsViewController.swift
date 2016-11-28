@@ -29,6 +29,8 @@ class PlaylistDetailsViewController: UIViewController, UICollectionViewDataSourc
 	public var playlistId: String?
 	public var model: Playlist?
 	
+	let margin: CGFloat = 20.0
+	
 	private var youtubeService: Youtube!
 	
 	var models: [PlaylistItem] = [] {
@@ -146,25 +148,27 @@ class PlaylistDetailsViewController: UIViewController, UICollectionViewDataSourc
 		cell.channelTitleLabel.text = model.snippet.channelTitle // will need refactoring because the channel title is on another api call.
 		
 		if let snippet = model.snippet, let thumbnail = snippet.thumbnails {
-			if let standard = thumbnail.standard, let url = standard.url {
-				let imageUrl = URL(string: url)
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
-			} else if let medium = thumbnail.medium, let url = medium.url {
-				let imageUrl = URL(string: url)
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
+			
+			var imageUrl = ""
+			
+			if let medium = thumbnail.medium, let url = medium.url {
+				imageUrl = url
+			} else if let standard = thumbnail.standard, let url = standard.url {
+				imageUrl = url
 			} else if let high = thumbnail.high, let url = high.url {
-				let imageUrl = URL(string: url)
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
+				imageUrl = url
 			} else if let maxres = thumbnail.maxres, let url = maxres.url {
-				let imageUrl = URL(string: url)
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
+				imageUrl = url
 			} else if let defaultRes = thumbnail.defaultValue, let url = defaultRes.url {
-				let imageUrl = URL(string: url)
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
+				imageUrl = url
 			} else {
-				let imageUrl = URL(string: "http://i.stack.imgur.com/WFy1e.jpg")
-				cell.videoImageView.af_setImage(withURL: imageUrl!)
+				imageUrl = "http://i.stack.imgur.com/WFy1e.jpg"
 			}
+			
+			let url = URL(string: imageUrl)
+			cell.videoImageView.af_setImage(withURL: url!, placeholderImage: UIImage(named: "novid"))
+			
+			
 		} else {
 			let imageUrl = URL(string: "http://i.stack.imgur.com/WFy1e.jpg")
 			cell.videoImageView.af_setImage(withURL: imageUrl!)
